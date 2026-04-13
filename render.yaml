@@ -1,0 +1,35 @@
+services:
+  # Backend Service
+  - type: web
+    name: quizsink-backend
+    runtime: docker
+    dockerfile: backend/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5200"
+      - key: DATABASE_PATH
+        value: /app/data/database.db
+      - key: JWT_SECRET
+        generateValue: true
+    disk:
+      name: quizsink-data
+      mountPath: /app/data
+      sizeGB: 1
+
+  # Frontend Service
+  - type: web
+    name: quizsink-frontend
+    runtime: docker
+    dockerfile: frontend/Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_BASE_URL
+        fromService:
+          name: quizsink-backend
+          type: web
+          property: host
+    # Note: On Render, the host property for a web service is its external URL.
+    # This ensures the browser knows where to send API requests.
