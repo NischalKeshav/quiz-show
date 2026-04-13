@@ -3,7 +3,9 @@ services:
   - type: web
     name: quizsink-backend
     runtime: docker
-    dockerfile: backend/Dockerfile
+    dockerContext: backend
+    dockerfilePath: Dockerfile
+    plan: starter # Persistent disks require Starter plan or higher
     envVars:
       - key: NODE_ENV
         value: production
@@ -22,7 +24,9 @@ services:
   - type: web
     name: quizsink-frontend
     runtime: docker
-    dockerfile: frontend/Dockerfile
+    dockerContext: frontend
+    dockerfilePath: Dockerfile
+    plan: starter
     envVars:
       - key: NODE_ENV
         value: production
@@ -31,5 +35,3 @@ services:
           name: quizsink-backend
           type: web
           property: host
-    # Note: On Render, the host property for a web service is its external URL.
-    # This ensures the browser knows where to send API requests.
